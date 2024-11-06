@@ -100,6 +100,26 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/layout/sidebar.php");
         }
     }
 
+    if ($_GET['page'] == "reports_approve") {
+        if (isset($_GET['id']) && !empty($_GET['id'])) {
+            $id = $_GET['id'];
+
+            approve('reports', $id);
+            echo "<script>
+                Swal.fire({
+                    title: 'Good job!',
+                    text: 'Report has been approved successfully',
+                    icon: 'success'
+                    }).then((result) => {
+                        window.location.href = 'index.php?page=list';
+                    });
+                </script>";
+        } else {
+            header("Location: /admin/index.php?page=list");
+            exit();
+        }
+    }
+
     if ($_GET['page'] == "create") {
         include_once("create-report.php");
     }

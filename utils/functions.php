@@ -43,12 +43,10 @@ function tambah($data, $table, $fields)
         $values[] = "'" . $data['user_id'] . "'";
     }
 
-
     if (isset($data['status'])) {
         $columns[] = 'status';
         $values[] = "'" . $data['status'] . "'";
     }
-
 
     if (isset($data['slug'])) {
         $columns[] = 'slug';
@@ -89,8 +87,6 @@ function update($table, $data, $where)
         unset($data['update']);
     }
 
-
-
     $fields = [];
     foreach ($data as $column => $value) {
         if ($column === 'password') {
@@ -113,6 +109,7 @@ function update($table, $data, $where)
 
     $fields_sql = implode(", ", $fields);
 
+
     $where_sql = [];
     foreach ($where as $key => $val) {
         $val = htmlspecialchars($val);
@@ -131,7 +128,27 @@ function update($table, $data, $where)
 function hapus($identifier, $table, $id)
 {
     global $connection;
+    $id = htmlspecialchars($id);
+    $data = query("SELECT * FROM reports WHERE id='$id'");
+    $data = $data[0];
+    if (isset($data['thumbnail'])) {
+        unlink("../assets/upload/" . $data['thumbnail']);
+    }
     mysqli_query($connection, "DELETE FROM $table WHERE $identifier='$id'");
+    return mysqli_affected_rows($connection);
+}
+
+function approve($table, $id)
+{
+    global $connection;
+    $id = htmlspecialchars($id);
+
+    $data = query("SELECT * FROM reports WHERE id='$id'");
+    if (!isset($data)) {
+        return -1;
+    }
+
+    update($table, ['status' => 1], ['id' => $id]);
     return mysqli_affected_rows($connection);
 }
 
@@ -316,7 +333,6 @@ function upload()
 
     return $newFilename;
 }
-
 
 function timeAgo($timestamp)
 {
