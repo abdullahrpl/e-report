@@ -43,6 +43,13 @@ function tambah($data, $table, $fields)
         $values[] = "'" . $data['user_id'] . "'";
     }
 
+
+    if (isset($data['status'])) {
+        $columns[] = 'status';
+        $values[] = "'" . $data['status'] . "'";
+    }
+
+
     if (isset($data['slug'])) {
         $columns[] = 'slug';
         $values[] = "'" . $data['slug'] . "'";
@@ -195,6 +202,7 @@ function handleFormSubmit($data, $table, $action)
     ];
 
     if ($table === 'reports') {
+        $data['status'] = 0;
         $data['user_id'] = $_SESSION['user_id'];
         $data['slug'] = strtolower(str_replace(" ", "-", $data['title']));
     }
